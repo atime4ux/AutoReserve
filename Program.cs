@@ -88,7 +88,7 @@ namespace AutoReserve
 
             string[] arrSite = dicParam["site"].Split(',').Where(x => string.IsNullOrEmpty(x) == false).Select(x => x.Trim()).ToArray();
             var reservationInfo = new ReservationInfo(targetDate, nightCnt, arrSite);
-            var objSlack = new Slack("https://hooks.slack.com/services/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");
+            var objSlack = new Slack(System.Configuration.ConfigurationManager.AppSettings["SLACK_WEBHOOK_URL"]);
 
             BaseModule module = null;
             switch (dicParam["module"].ToLower())
