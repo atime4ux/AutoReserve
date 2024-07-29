@@ -21,6 +21,15 @@ namespace AutoReserve
             dicParam.Add("area", "");
             dicParam.Add("site", "");
 
+#if DEBUG
+            dicParam["module"] = "mangsang";
+            dicParam["operation"] = "watching";
+            dicParam["date"] = "2024-08-19";
+            dicParam["night"] = "1";
+            dicParam["area"] = "";
+            dicParam["site"] = "41";
+#endif
+
             for (int i = 0; i < args.Length; i++)
             {
                 if (args[i].StartsWith("-"))
@@ -115,6 +124,9 @@ namespace AutoReserve
                     break;
                 case "chuam":
                     module = new Chuam(objSlack, reservationInfo);
+                    break;
+                case "mangsang":
+                    module = new Mangsang(objSlack, reservationInfo);
                     break;
                 default:
                     break;

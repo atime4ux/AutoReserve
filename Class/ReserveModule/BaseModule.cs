@@ -48,7 +48,7 @@ namespace AutoReserve.Class.ReserveModule
 
         private readonly string SCRIPT_LIB = @"
 return await(async () => {
-    async function loadScript(src) {
+    const loadScript = async (src) => {
         return new Promise((resolve, reject) => {
             const elem = document.createElement('script');
             elem.src = src;
@@ -70,6 +70,14 @@ return await(async () => {
             });
         });
     }
+
+    try {
+        if ($my) {
+            return 'Complete loading';
+        }
+    }
+    catch (err) { }
+
     const res = await loadScript('" + System.Configuration.ConfigurationManager.AppSettings["LIB_URL"] + @"');
     return res;
 })();
@@ -99,14 +107,6 @@ return await(async () => {
             if (result == false)
             {
                 Console.WriteLine("error [BeforeStartWatchingChild]");
-                return false;
-            }
-
-            //lib로딩
-            string resultLoadingLib = CheckLoadingLib();
-            if (resultLoadingLib.Length > 0)
-            {
-                Console.WriteLine(resultLoadingLib);
                 return false;
             }
 
@@ -141,6 +141,9 @@ return await(async () => {
                         bool stopLoop = false;
                         while (stopLoop == false)
                         {
+                            //lib로딩
+                            CheckLoadingLib();
+
                             stopLoop = StartWatchingChild();
 
                             if (LOOP_MINUTES > 0 && dateLoopStart.AddMinutes(LOOP_MINUTES) < DateTime.Now)
@@ -216,10 +219,15 @@ return await(async () => {
         /// 로딩 성공시 공백 반환
         /// </summary>
         /// <returns></returns>
-        protected string CheckLoadingLib()
+        protected void CheckLoadingLib()
         {
             string resultLoadingLib = (string)DRIVER.ExecuteScript(SCRIPT_LIB);
-            return resultLoadingLib.StartsWith("Complete") ? "" : resultLoadingLib;
+
+            if (resultLoadingLib.StartsWith("Complete") == false)
+            {
+                Console.WriteLine(resultLoadingLib);
+                throw new Exception("error [CheckLoadingLib]");
+            }
         }
 
         protected OpenQA.Selenium.Chrome.ChromeOptions GetChromeOptions()

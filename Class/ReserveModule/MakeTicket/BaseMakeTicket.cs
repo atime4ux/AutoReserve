@@ -57,12 +57,8 @@ namespace AutoReserve.Class.ReserveModule
                 }
 
                 //lib로딩
-                string resultLoadingLib = base.CheckLoadingLib();
-                if (resultLoadingLib.Length > 0)
-                {
-                    Console.WriteLine(resultLoadingLib);
-                    return false;
-                }
+                base.CheckLoadingLib();
+                
 
                 //스크립트 테스트
                 int remainCnt = 0;

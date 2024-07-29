@@ -39,12 +39,7 @@ namespace AutoReserve.Class.ReserveModule
                 DRIVER.Navigate().GoToUrl(COMPANY_URL);
                 WAIT.Until(x => x.IsElementVisible(By.Id("container")));
 
-                string resultLoadingLib = base.CheckLoadingLib();
-                if (resultLoadingLib.Length > 0)
-                {
-                    Console.WriteLine(resultLoadingLib);
-                    return false;
-                }
+                CheckLoadingLib();
 
                 string xpathLoginStateArea = "(//a[starts-with(@class, 'header_menu')])[1]";
                 if (DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그인")

@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class\ReserveModule\BaseModule.cs" />
+    <Compile Include="Class\ReserveModule\Mangsang.cs" />
     <Compile Include="Class\ReserveModule\Sanjang.cs" />
     <Compile Include="Class\ReserveModule\Chuam.cs" />
     <Compile Include="Class\ReserveModule\MakeTicket\BaseMakeTicket.cs" />
