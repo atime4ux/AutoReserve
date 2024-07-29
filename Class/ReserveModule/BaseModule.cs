@@ -167,6 +167,7 @@ return await(async () => {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
                 MESSAGE_SENDER.Send($"err {msgBase}");
+                Util.WriteMsgThenWait("press any key to dispose driver");
             }
             finally
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace AutoReserve
 {
@@ -48,6 +49,13 @@ namespace AutoReserve
             }
 
             return strResult;
+        }
+
+        public static void WriteMsgThenWait(string msg)
+        {
+            Console.WriteLine(msg);
+            Console.WriteLine("press any key");
+            Console.ReadKey();
         }
     }
 

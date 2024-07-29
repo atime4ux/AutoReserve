@@ -33,7 +33,7 @@ namespace AutoReserve
                     }
                     else
                     {
-                        WriteMsgThenWait($"check parameters - [{paramKey}]");
+                        Util.WriteMsgThenWait($"check parameters - [{paramKey}]");
                         return;
                     }
                 }
@@ -41,7 +41,7 @@ namespace AutoReserve
 
             if (dicParam.Where(x => new string[] { "area", "site" }.Contains(x.Key) == false).Any(x => x.Value == ""))
             {
-                WriteMsgThenWait($"check parameters - [{string.Join(",", dicParam.Select(x => $"-{x.Key}"))}]");
+                Util.WriteMsgThenWait($"check parameters - [{string.Join(",", dicParam.Select(x => $"-{x.Key}"))}]");
                 return;
             }
 
@@ -51,7 +51,7 @@ namespace AutoReserve
             }
             catch (FormatException)
             {
-                WriteMsgThenWait($"check parameters - [date : yyyy-MM-dd]");
+                Util.WriteMsgThenWait($"check parameters - [date : yyyy-MM-dd]");
                 return;
             }
 
@@ -61,7 +61,7 @@ namespace AutoReserve
             }
             catch (FormatException)
             {
-                WriteMsgThenWait($"check parameters - [night : integer]");
+                Util.WriteMsgThenWait($"check parameters - [night : integer]");
                 return;
             }
 
@@ -77,9 +77,9 @@ namespace AutoReserve
                 @"#      \      /                                            #",
                 @"#       `----'                                             #",
                 @"#                                                          #",
-                @"#       프로그램이 시작되었습니다!                         #",
-                @"#                                                          #",
-                @"############################################################"
+                @"############################################################",
+                string.Join(" ", args),
+                @"############################################################",
             };
             foreach (string line in bannerLines)
             {
@@ -133,24 +133,17 @@ namespace AutoReserve
                 }
                 else
                 {
-                    WriteMsgThenWait($"check parameters - [operation]");
+                    Util.WriteMsgThenWait($"check parameters - [operation]");
                     return;
                 }
             }
             else
             {
-                WriteMsgThenWait($"check parameters - [module]");
+                Util.WriteMsgThenWait($"check parameters - [module]");
                 return;
             }
 
-            WriteMsgThenWait("job complete");
-            Console.ReadKey();
-        }
-
-        private static void WriteMsgThenWait(string msg)
-        {
-            Console.WriteLine(msg);
-            Console.WriteLine("press any key");
+            Util.WriteMsgThenWait("job complete");
             Console.ReadKey();
         }
     }

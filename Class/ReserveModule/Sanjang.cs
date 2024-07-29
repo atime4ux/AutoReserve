@@ -17,6 +17,8 @@ namespace AutoReserve.Class.ReserveModule
             COMPANY_NAME = "산장관광지";
             COMPANY_URL = "https://tickets.interpark.com/goods/22016999";
 
+            LOOP_SLEEP_MS = 750;
+
             if (RESERVATION_INFO.LstSite.Count == 0)
             {
                 RESERVATION_INFO.LstSite.AddRange(new string[] { "캠핑장B(특대형)-2", "캠핑장B(특대형)-3", "캠핑장B(대형)-4", "캠핑장B(대형)-3" });
@@ -31,71 +33,78 @@ namespace AutoReserve.Class.ReserveModule
         protected override bool BeforeStartWatchingChild()
         {
             //인터파크 예약 정보 확인하여 없으면 로그인부터 진행
-            //있으면 새로고침
-
-            DRIVER.Navigate().GoToUrl(COMPANY_URL);
-            WAIT.Until(x => x.IsElementVisible(By.Id("container")));
-
-            string resultLoadingLib = base.CheckLoadingLib();
-            if (resultLoadingLib.Length > 0)
+            bool existSteInfo = false;
+            if (existSteInfo == false)
             {
-                Console.WriteLine(resultLoadingLib);
-                return false;
-            }
+                DRIVER.Navigate().GoToUrl(COMPANY_URL);
+                WAIT.Until(x => x.IsElementVisible(By.Id("container")));
 
-            string xpathLoginStateArea = "(//a[starts-with(@class, 'header_menu')])[1]";
-            if (DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그인")
-            {
-                //로그인 화면으로 이동
-                DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Click();
-
-                //페이지 로딩 확인
-                WAIT.Until(x => x.IsElementVisible(By.Id("userId")));
-
-                //로그인 정보
-                Dictionary<string, string> dicLoginInfo = new Dictionary<string, string>();
-                dicLoginInfo.Add("atime4ux", System.Text.Encoding.UTF8.GetString(Convert.FromBase64String("bGNvMmd1c3Rqcg==")));
-                dicLoginInfo.Add("jjin00hs", System.Text.Encoding.UTF8.GetString(Convert.FromBase64String("bGp5NDU5MGhzIQ==")));
-
-                //id 입력 대기
-                for (int i = 0; i < 9; i++)
+                string resultLoadingLib = base.CheckLoadingLib();
+                if (resultLoadingLib.Length > 0)
                 {
-                    try
-                    {
-                        WAIT.Until(x => dicLoginInfo.Any(y => y.Key == x.FindElement(By.Id("userId")).GetAttribute("value")));
-
-                        //id입력되면 비밀번호 입력 후 로그인
-                        string userId = DRIVER.FindElement(By.Id("userId")).GetAttribute("value");
-                        DRIVER.FindElement(By.Id("userPwd")).SendKeys(dicLoginInfo[userId]);
-                        DRIVER.FindElement(By.Id("saveSess")).Click();
-                        DRIVER.FindElement(By.Id("btn_login")).Click();
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그아웃")
-                        {
-                            //다른아이디로 로그인 한 경우
-                            break;
-                        }
-
-                        if (i == 9)
-                        {
-                            throw new Exception("could not find login state");
-                        }
-                    }
+                    Console.WriteLine(resultLoadingLib);
+                    return false;
                 }
 
-                //페이지 로딩 확인 - 로그인 여부 확인
-                WAIT.Until(x => x.IsElementVisible(By.XPath(xpathLoginStateArea)) && x.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그아웃");
-            }
+                string xpathLoginStateArea = "(//a[starts-with(@class, 'header_menu')])[1]";
+                if (DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그인")
+                {
+                    //로그인 화면으로 이동
+                    DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Click();
 
-            //날짜선택
-            //기간선택
-            //예매하기 선택
-            //팝업 생성확인
-            //부모창 닫기
-            //팝업으로 스위치
+                    //페이지 로딩 확인
+                    WAIT.Until(x => x.IsElementVisible(By.Id("userId")));
+
+                    //로그인 정보
+                    Dictionary<string, string> dicLoginInfo = new Dictionary<string, string>();
+                    dicLoginInfo.Add("atime4ux", System.Text.Encoding.UTF8.GetString(Convert.FromBase64String("bGNvMmd1c3Rqcg==")));
+                    dicLoginInfo.Add("jjin00hs", System.Text.Encoding.UTF8.GetString(Convert.FromBase64String("bGp5NDU5MGhzIQ==")));
+
+                    //id 입력 대기
+                    for (int i = 0; i < 9; i++)
+                    {
+                        try
+                        {
+                            WAIT.Until(x => dicLoginInfo.Any(y => y.Key == x.FindElement(By.Id("userId")).GetAttribute("value")));
+
+                            //id입력되면 비밀번호 입력 후 로그인
+                            string userId = DRIVER.FindElement(By.Id("userId")).GetAttribute("value");
+                            DRIVER.FindElement(By.Id("userPwd")).SendKeys(dicLoginInfo[userId]);
+                            DRIVER.FindElement(By.Id("saveSess")).Click();
+                            DRIVER.FindElement(By.Id("btn_login")).Click();
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (DRIVER.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그아웃")
+                            {
+                                //다른아이디로 로그인 한 경우
+                                break;
+                            }
+
+                            if (i == 9)
+                            {
+                                throw new Exception("could not find login state");
+                            }
+                        }
+                    }
+
+                    //페이지 로딩 확인 - 로그인 여부 확인
+                    WAIT.Until(x => x.IsElementVisible(By.XPath(xpathLoginStateArea)) && x.FindElement(By.XPath(xpathLoginStateArea)).Text == "로그아웃");
+                }
+
+                //날짜선택
+                //기간선택
+                //예매하기 선택
+                //팝업 생성확인
+                //부모창 닫기
+                //팝업으로 스위치
+            }
+            else
+            {
+                //있으면 새로고침
+                DRIVER.Navigate().Refresh();
+            }
 
             return true;
         }
